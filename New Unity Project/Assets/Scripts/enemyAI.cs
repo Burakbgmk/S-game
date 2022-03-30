@@ -8,9 +8,14 @@ public class enemyAI : MonoBehaviour
     [SerializeField] private float moveRate;
     [SerializeField] private int shotRemaining;
     [SerializeField] private int attackRemaining;
-    [SerializeField] private float patrolSpeed;
     [SerializeField] private float patrolDuration = 5f;
     public int bossTurn;
+    public float patrolSpeed;
+    public float attackRate;
+    public GameObject enemyShot;
+    public GameObject enemyShotSpawn;
+    public GameObject targetShip;
+
 
     AudioSource audioPlayer;
     Rigidbody physic;
@@ -20,15 +25,13 @@ public class enemyAI : MonoBehaviour
     private bool mustShoot;
     private bool mustReturn;
     
-    public GameObject enemyShot;
-    public GameObject enemyShotSpawn;
-    public GameObject targetShip;
-    public float attackRate;
+    
     private Vector3 target;
     private int shotForTurn;
     private int attackForTurn;
+    private int bossForTurn;
 
-    private void Start()
+    private void OnEnable()
     {
         audioPlayer = GetComponent<AudioSource>();
         physic = GetComponent<Rigidbody>();
@@ -42,7 +45,6 @@ public class enemyAI : MonoBehaviour
    
     private void FixedUpdate()
     {
-        
         if (mustPatrol)
         {
             Patrol();
@@ -84,7 +86,7 @@ public class enemyAI : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         
-        if (other.gameObject.tag == "AIbound" && bossTurn>0)
+        if (other.gameObject.tag == "AIbound" && bossForTurn>0)
         {
             Turn();
         }
@@ -93,7 +95,8 @@ public class enemyAI : MonoBehaviour
 
     IEnumerator Attacks()
     {
-        while (bossTurn>0)
+        bossForTurn = bossTurn;
+        while (bossForTurn>0)
         {
             yield return new WaitForSecondsRealtime(patrolDuration);
             mustPatrol = false;
@@ -119,7 +122,7 @@ public class enemyAI : MonoBehaviour
             yield return new WaitUntil(() => transform.position.z == 8);
             mustReturn = false;
             mustPatrol = true;
-            bossTurn -= 1;
+            bossForTurn -= 1;
         }
     }
     

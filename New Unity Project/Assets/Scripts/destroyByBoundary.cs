@@ -10,6 +10,7 @@ public class destroyByBoundary : MonoBehaviour
         {
             other.gameObject.SetActive(false);
             other.gameObject.transform.position = new Vector3(3.35f, 0, 8);
+            other.gameObject.GetComponent<enemyAI>().patrolSpeed = 60f;
             return;
         }
         Destroy(other.gameObject);

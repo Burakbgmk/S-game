@@ -204,9 +204,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1623358996527083591, guid: d9208a7460123fe4fa702f4842138687,
         type: 3}
+      propertyPath: bossTurn
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1623358996527083591, guid: d9208a7460123fe4fa702f4842138687,
+        type: 3}
       propertyPath: targetShip
       value: 
       objectReference: {fileID: 1419329953}
+    - target: {fileID: 1623358996527083591, guid: d9208a7460123fe4fa702f4842138687,
+        type: 3}
+      propertyPath: attackCalibration
+      value: 0.02
+      objectReference: {fileID: 0}
     - target: {fileID: 1623358998128410257, guid: d9208a7460123fe4fa702f4842138687,
         type: 3}
       propertyPath: m_RootOrder
@@ -697,7 +707,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hazard: {fileID: 4419302245517055211, guid: 0fd11ebb01fdba14c8616c823e3c02c7, type: 3}
   shipHazard: {fileID: 996960127}
-  spawnCount: 5
+  spawnCount: 1
   spawnWait: 0.6
   startSpawn: 1
   waveWait: 4

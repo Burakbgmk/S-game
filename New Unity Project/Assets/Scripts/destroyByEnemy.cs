@@ -26,6 +26,10 @@ public class destroyByEnemy : MonoBehaviour
             GameController.GameOver();
         }
         Destroy(other.gameObject);
-        Destroy(gameObject);
+        gameObject.SetActive(false);
+        gameObject.transform.position = new Vector3(3.35f, 0, 8);
+        gameObject.GetComponent<enemyAI>().patrolSpeed = 60f;
+
+        GameController.UpdateScore();
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class gameController : MonoBehaviour
 {
     public GameObject hazard;
-    public GameObject shipHazard;
+    
     public int spawnCount;
     public float spawnWait;
     public float startSpawn;
@@ -22,8 +22,25 @@ public class gameController : MonoBehaviour
     public Text quitText;
     public int score;
 
+    private GameObject[] shipHazards;
+    private GameObject shipHazard;
     private bool gameOver;
     private bool restart;
+    void Start()
+    {
+        shipHazards = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject ship in shipHazards)
+        {
+            ship.SetActive(false);
+        }
+        gameOverText.text = "";
+        restartText.text = "";
+        quitText.text = "";
+        gameOver = false;
+        restart = false;
+        StartCoroutine(SpawnValues());
+
+    }
 
     void Update()
     {
@@ -43,13 +60,13 @@ public class gameController : MonoBehaviour
     }
     IEnumerator SpawnValues()
     {
-        while(true)
+        for(int j = 0; j < shipHazards.Length; j++)
         {
+            shipHazard = shipHazards[j];
             spawnLevels = asteroidLevels;
             yield return new WaitForSeconds(startSpawn);
             while (spawnLevels > 0)
             {
-
                 for (int i = 0; i < spawnCount; i++)
                 {
                     Vector3 spawnPosition = new Vector3(Random.Range(-3, 3), 0, 10);
@@ -73,7 +90,8 @@ public class gameController : MonoBehaviour
             shipHazard.SetActive(true);
             yield return new WaitUntil(() => shipHazard.activeSelf == false);
         }
-        
+        GameOver();
+        EndOptions();
     }
 
     private void EndOptions()
@@ -97,15 +115,6 @@ public class gameController : MonoBehaviour
     }
 
 
-    void Start()
-    {
-        gameOverText.text = "";
-        restartText.text = "";
-        quitText.text = "";
-        gameOver = false;
-        restart = false;
-        StartCoroutine(SpawnValues());
 
-    }
 
 }

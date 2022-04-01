@@ -9,6 +9,7 @@ TagManager:
   - Asteroids
   - EnemyBolt
   - AIbound
+  - ShotSpawn
   layers:
   - Default
   - TransparentFX

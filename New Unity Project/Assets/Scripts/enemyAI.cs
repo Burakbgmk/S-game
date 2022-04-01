@@ -11,11 +11,10 @@ public class enemyAI : MonoBehaviour
     [SerializeField] private float patrolDuration = 5f;
     public int bossTurn;
     public float patrolSpeed;
+    public float shootRate;
     public float attackRate;
     public GameObject enemyShot;
-    public GameObject enemyShotSpawn;
-    public GameObject targetShip;
-
+    
 
     AudioSource audioPlayer;
     Rigidbody physic;
@@ -24,8 +23,9 @@ public class enemyAI : MonoBehaviour
     private bool mustAttack;
     private bool mustShoot;
     private bool mustReturn;
-    
-    
+
+    private GameObject[] enemyShotSpawn;
+    private GameObject targetShip;
     private Vector3 target;
     private int shotForTurn;
     private int attackForTurn;
@@ -33,6 +33,8 @@ public class enemyAI : MonoBehaviour
 
     private void OnEnable()
     {
+        targetShip = GameObject.FindGameObjectWithTag("Player");
+        enemyShotSpawn = GameObject.FindGameObjectsWithTag("ShotSpawn");
         audioPlayer = GetComponent<AudioSource>();
         physic = GetComponent<Rigidbody>();
         mustPatrol = true;
@@ -45,19 +47,24 @@ public class enemyAI : MonoBehaviour
    
     private void FixedUpdate()
     {
+        
         if (mustPatrol)
         {
             Patrol();
-        }
-        if (mustAttack)
-        {
-            Attack();
         }
         if (mustReturn)
         {
             Return();
         }
-        
+        if (target == null || targetShip == null)
+        {
+            return;
+        }
+        if (mustAttack)
+        {
+            Attack();
+        }
+
     }
 
     void Patrol()
@@ -67,12 +74,16 @@ public class enemyAI : MonoBehaviour
     void Attack()
     {
         target = new Vector3(targetShip.transform.position.x, 0, 6);
-        physic.transform.position = Vector3.Lerp(transform.position, target, moveRate);
+        physic.transform.position = (Vector3.Lerp(transform.position, target, moveRate) + Vector3.MoveTowards(transform.position, target, moveRate))/2;
     }
     void Shoot()
     {
-        Instantiate(enemyShot, enemyShotSpawn.transform.position, enemyShotSpawn.transform.rotation);
-        audioPlayer.Play();
+        foreach (GameObject spawn in enemyShotSpawn)
+        {
+            Instantiate(enemyShot, spawn.transform.position, spawn.transform.rotation);
+            audioPlayer.Play();
+        }
+
     }
     void Return()
     {
@@ -98,7 +109,7 @@ public class enemyAI : MonoBehaviour
         bossForTurn = bossTurn;
         while (bossForTurn>0)
         {
-            yield return new WaitForSecondsRealtime(patrolDuration);
+            yield return new WaitForSecondsRealtime(Random.Range(1,patrolDuration));
             mustPatrol = false;
             mustAttack = true;
             attackForTurn = attackRemaining;
@@ -110,11 +121,11 @@ public class enemyAI : MonoBehaviour
                 while (mustShoot == true && shotForTurn > 0)
                 {
                     Shoot();
-                    yield return new WaitForSecondsRealtime(attackRate);
+                    yield return new WaitForSecondsRealtime(shootRate);
                     shotForTurn -= 1;
                 }
                 mustShoot = false;
-                yield return new WaitForSecondsRealtime(1f);
+                yield return new WaitForSecondsRealtime(attackRate);
                 attackForTurn -= 1;
             }
             mustAttack = false;
